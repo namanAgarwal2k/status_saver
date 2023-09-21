@@ -1,17 +1,13 @@
-// @dart=2.9
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-
 import 'viewphotos.dart';
 
-final Directory _photoDir =
+final Directory _newPhotoDir =
     Directory('/storage/emulated/0/WhatsApp/Media/.Statuses');
 
 class ImageScreen extends StatefulWidget {
-  const ImageScreen({Key key}) : super(key: key);
+  const ImageScreen({Key? key}) : super(key: key);
   @override
   ImageScreenState createState() => ImageScreenState();
 }
@@ -24,7 +20,7 @@ class ImageScreenState extends State<ImageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (!Directory('${_photoDir.path}').existsSync()) {
+    if (!Directory('${_newPhotoDir.path}').existsSync()) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -39,52 +35,42 @@ class ImageScreenState extends State<ImageScreen> {
         ],
       );
     } else {
-      final imageList = _photoDir
+      final imageList = _newPhotoDir
           .listSync()
           .map((item) => item.path)
           .where((item) => item.endsWith('.jpg'))
           .toList(growable: false);
-      print(imageList);
       if (imageList.length > 0) {
         return Container(
-          margin: const EdgeInsets.all(8.0),
-          child: StaggeredGridView.countBuilder(
-            itemCount: imageList.length,
-            crossAxisCount: 4,
-            itemBuilder: (context, index) {
-              final imgPath = imageList[index];
-              return Material(
-                elevation: 8.0,
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ViewPhotos(
-                          imgPath: imgPath,
-                        ),
+            margin: const EdgeInsets.all(8.0),
+            child: GridView.builder(
+              key: PageStorageKey(widget.key),
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  childAspectRatio: 0.5, maxCrossAxisExtent: 150),
+              itemCount: imageList.length,
+              itemBuilder: (BuildContext context, int index) {
+                final String imgPath = imageList[index];
+                return Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ViewPhotos(
+                              imgPath: imgPath,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Image.file(
+                        File(imageList[index]),
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.medium,
                       ),
-                    );
-                  },
-                  child: HeroMode(
-                    child: Hero(
-                        tag: imgPath,
-                        child: Image.file(
-                          File(imgPath),
-                          fit: BoxFit.cover,
-                        )),
-                    enabled: false,
-                  ),
-                ),
-              );
-            },
-            staggeredTileBuilder: (i) =>
-                StaggeredTile.count(2, i.isEven ? 2 : 3),
-            mainAxisSpacing: 8.0,
-            crossAxisSpacing: 8.0,
-          ),
-        );
+                    ));
+              },
+            ));
       } else {
         return Scaffold(
           body: Center(

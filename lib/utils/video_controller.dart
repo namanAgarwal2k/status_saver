@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
@@ -11,11 +9,11 @@ class StatusVideo extends StatefulWidget {
   final double aspectRatio;
 
   const StatusVideo({
-    @required this.videoPlayerController,
-    this.looping,
-    this.videoSrc,
-    this.aspectRatio,
-    Key key,
+    required this.videoPlayerController,
+    required this.looping,
+    required this.videoSrc,
+    required this.aspectRatio,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -23,7 +21,7 @@ class StatusVideo extends StatefulWidget {
 }
 
 class _StatusVideoState extends State<StatusVideo> {
-  ChewieController _chewieController;
+  late ChewieController _chewieController;
   @override
   void initState() {
     super.initState();

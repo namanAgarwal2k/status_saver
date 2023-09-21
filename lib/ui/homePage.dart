@@ -1,25 +1,24 @@
-// @dart=2.9
-
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'dashboard.dart';
 import 'videoScreen.dart';
 import 'imageScreen.dart';
 
 class MyHome extends StatefulWidget {
-  const MyHome({Key key}) : super(key: key);
+  const MyHome({Key? key}) : super(key: key);
 
   @override
   State<MyHome> createState() => _MyHomeState();
 }
 
 class _MyHomeState extends State<MyHome> {
-  final String appPackageName = 'com.sudoStudio.whatsapp_status_saver';
-
+  bool isDark = true;
   final html =
-      '<h3><b>How To Use?</b></h3><p>- Check the Desired Status/Story...</p><p>- Come Back to App, Click on any Image or Video to View...</p><p>- Click the Save Button...<br />The Image/Video is Instantly saved to your Gallery :)</p><p>- You can also Use Multiple Saving. [to do]</p>';
+      '<h3><b>How To Use?</b></h3><p>- Check the Desired Status/Story...</p><p>- Come Back to App, Click on any Image or Video to View...</p><p>- Click the Save Button...<br />The Image/Video is Instantly saved to your Galery :)</p><p>- You can also Use Multiple Saving. [to do]</p>';
+
   openUrl(String choice) async {
     if (choice == Constants.about) {
       if (await canLaunch(
@@ -40,6 +39,18 @@ class _MyHomeState extends State<MyHome> {
     }
   }
 
+  void toggleTheme() {
+    if (isDark) {
+      isDark = false;
+      ThemeMode.light;
+      setState(() {});
+    } else {
+      isDark = true;
+      ThemeMode.dark;
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -47,12 +58,12 @@ class _MyHomeState extends State<MyHome> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Status Saver'),
-          backgroundColor: Colors.teal,
+          backgroundColor: isDark ? Colors.grey : Colors.teal,
           actions: <Widget>[
             IconButton(
                 icon: const Icon(Icons.lightbulb_outline),
                 onPressed: () {
-                  AdaptiveTheme.of(context).toggleThemeMode();
+                  toggleTheme();
                 }),
             PopupMenuButton<String>(
               onSelected: choiceAction,
@@ -67,22 +78,22 @@ class _MyHomeState extends State<MyHome> {
               },
             )
           ],
-          bottom: const TabBar(tabs: [
-            const Tab(
-              text: 'VIDEOS',
+          bottom: TabBar(tabs: [
+            Container(
+              padding: const EdgeInsets.all(12.0),
+              child: const Text(
+                'IMAGES',
+              ),
             ),
-            const Tab(
-              text: 'IMAGES',
+            Container(
+              padding: const EdgeInsets.all(12.0),
+              child: const Text(
+                'VIDEOS',
+              ),
             ),
           ]),
         ),
-        body: TabBarView(
-          children: [
-            const VideoScreen(),
-            const ImageScreen(),
-          ],
-        ),
-        //Dashboard(),
+        body: Dashboard(),
       ),
     );
   }

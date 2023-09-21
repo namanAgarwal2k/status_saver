@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -11,8 +9,8 @@ import 'video_controller.dart';
 class PlayStatus extends StatefulWidget {
   final String videoFile;
   const PlayStatus({
-    Key key,
-    this.videoFile,
+    Key? key,
+    required this.videoFile,
   }) : super(key: key);
   @override
   _PlayStatusState createState() => _PlayStatusState();
@@ -120,6 +118,7 @@ class _PlayStatusState extends State<PlayStatus> {
             VideoPlayerController.file(File(widget.videoFile)),
         looping: true,
         videoSrc: widget.videoFile,
+        aspectRatio: 1,
       ),
       // ),
       floatingActionButton: FloatingActionButton(
