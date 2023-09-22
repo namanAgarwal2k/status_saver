@@ -3,19 +3,24 @@
     package="com.sudoStudio.status_saver">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission
-    android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-    android:minSdkVersion="30"
-        tools:ignore="ScopedStorage" />
+<!--    <uses-permission-->
+<!--    android:name="android.permission.MANAGE_EXTERNAL_STORAGE"-->
+<!--    android:minSdkVersion="30"-->
+<!--        tools:ignore="ScopedStorage" />-->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION"/>
+<!--    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"/>-->
+
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29"
+        android:maxSdkVersion="32"
         tools:targetApi="donut" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:label="Status Saver"
-                android:icon="@mipmap/launcher_icon">
+                android:icon="@mipmap/ic_launcher">
 
         <activity
             android:name=".MainActivity"
@@ -26,7 +31,8 @@
 
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            tools:targetApi="honeycomb">
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues

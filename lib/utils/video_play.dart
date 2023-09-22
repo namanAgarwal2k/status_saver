@@ -39,7 +39,7 @@ class _PlayStatusState extends State<PlayStatus> {
                 Center(
                   child: Container(
                       padding: const EdgeInsets.all(10.0),
-                      child: const CircularProgressIndicator()),
+                      child: const CircularProgressIndicator(color: Colors.teal,)),
                 ),
               ],
             );

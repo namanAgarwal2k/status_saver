@@ -30,7 +30,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  adaptive_theme: ^2.3.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -47,6 +46,7 @@ dependencies:
   device_info_plus: ^7.0.0
   speed_dial_fab: ^2.2.1
   flutter_html: ^2.2.1
+  share: ^2.0.4
 
 dev_dependencies:
   flutter_test:

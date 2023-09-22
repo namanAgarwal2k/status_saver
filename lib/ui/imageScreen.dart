@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:status_saver/ui/constant.dart';
 import 'viewphotos.dart';
 
 final Directory _newPhotoDir =
@@ -21,18 +22,27 @@ class ImageScreenState extends State<ImageScreen> {
   @override
   Widget build(BuildContext context) {
     if (!Directory('${_newPhotoDir.path}').existsSync()) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'Install WhatsApp\n',
-            style: TextStyle(fontSize: 18.0),
-          ),
-          const Text(
-            "Your Friend's Status Will Be Available Here",
-            style: TextStyle(fontSize: 18.0),
-          ),
-        ],
+      return Container(
+        color: isDark ? Colors.black : Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Install WhatsApp\n',
+              style: TextStyle(
+                fontSize: 18.0,
+                color: textColor,
+              ),
+            ),
+            Text(
+              "Your Friend's Status Will Be Available Here",
+              style: TextStyle(
+                fontSize: 18.0,
+                color: textColor,
+              ),
+            ),
+          ],
+        ),
       );
     } else {
       final imageList = _newPhotoDir
@@ -42,7 +52,8 @@ class ImageScreenState extends State<ImageScreen> {
           .toList(growable: false);
       if (imageList.length > 0) {
         return Container(
-            margin: const EdgeInsets.all(8.0),
+            color: isDark ? Colors.black : Colors.white,
+            padding: const EdgeInsets.all(8.0),
             child: GridView.builder(
               key: PageStorageKey(widget.key),
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
@@ -75,10 +86,15 @@ class ImageScreenState extends State<ImageScreen> {
         return Scaffold(
           body: Center(
             child: Container(
+                color: isDark ? Colors.black : Colors.white,
                 padding: const EdgeInsets.only(bottom: 60.0),
-                child: const Text(
-                  'Sorry, No Image Found!',
-                  style: TextStyle(fontSize: 18.0),
+                child: Text(
+                  'Sorry, No Image Found!\n'
+                  'Watch your friend status first and than try reopening the app',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    color: textColor,
+                  ),
                 )),
           ),
         );

@@ -2,7 +2,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:status_saver/ui/constant.dart';
 import 'package:status_saver/ui/homePage.dart';
 // import 'package:flutter_html/flutter_html.dart';
 
@@ -35,12 +35,12 @@ class MyAppState extends State<MyApp> {
       androidSDK = androidInfo.version.sdkInt;
     });
     //
-    if (androidSDK! >= 30) {
-      //Check first if we already have the permissions
-      final _currentStatusManaged =
-          await Permission.manageExternalStorage.status;
-      if (_currentStatusManaged.isGranted) {
-        //Update
+    if (androidSDK! >= 33) {
+      //request management permissions for android 13 and higher devices
+      final _requestPhotos = await Permission.photos.request();
+      final _requestVideos = await Permission.videos.request();
+      //Update Provider model
+      if (_requestPhotos.isGranted && _requestVideos.isGranted) {
         return 1;
       } else {
         return 0;
@@ -59,12 +59,12 @@ class MyAppState extends State<MyApp> {
   }
 
   Future<int> requestPermission() async {
-    if (androidSDK! >= 30) {
-      //request management permissions for android 11 and higher devices
-      final _requestStatusManaged =
-          await Permission.manageExternalStorage.request();
+    if (androidSDK! >= 33) {
+      //request management permissions for android 13 and higher devices
+      final _requestPhotos = await Permission.photos.request();
+      final _requestVideos = await Permission.videos.request();
       //Update Provider model
-      if (_requestStatusManaged.isGranted) {
+      if (_requestPhotos.isGranted && _requestVideos.isGranted) {
         return 1;
       } else {
         return 0;
@@ -124,116 +124,129 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return AdaptiveTheme(
-      light: ThemeData(
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Status Saver',
+      theme: ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.teal,
-        // accentColor: Colors.amber,
+        /* light theme settings */
       ),
-      dark: ThemeData(
+      darkTheme: ThemeData(
         brightness: Brightness.dark,
-        primarySwatch: Colors.teal,
-        // accentColor: Colors.amber,
+        /* dark theme settings */
       ),
-      initial: AdaptiveThemeMode.light,
-      builder: (theme, darkTheme) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Savvy',
-        theme: theme,
-        darkTheme: darkTheme,
-        home: DefaultTabController(
-          length: 2,
-          child: FutureBuilder(
-            future: _storagePermissionChecker,
-            builder: (context, status) {
-              if (status.connectionState == ConnectionState.done) {
-                if (status.hasData) {
-                  if (status.data == 1) {
-                    return MyHome();
-                  } else {
-                    return Scaffold(
-                      body: Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomLeft,
-                            end: Alignment.topRight,
-                            colors: [
-                              Colors.lightBlue.shade100,
-                              Colors.lightBlue.shade200,
-                              Colors.lightBlue.shade300,
-                              Colors.lightBlue.shade200,
-                              Colors.lightBlue.shade50,
-                            ],
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: Text(
-                                'storage permission required',
-                                style: TextStyle(
-                                    fontSize: 20.0, color: Colors.white),
-                              ),
-                            ),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: TextButton(
-                                child: const Text(
-                                  'Allow Storage Permission',
-                                  style: TextStyle(fontSize: 20.0),
-                                ),
-                                onPressed: () {
-                                  _storagePermissionChecker =
-                                      requestPermission();
-                                  setState(() {});
-                                },
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  }
+      themeMode: customThemeMode,
+      home: DefaultTabController(
+        length: 2,
+        child: FutureBuilder(
+          future: _storagePermissionChecker,
+          builder: (context, status) {
+            if (status.connectionState == ConnectionState.done) {
+              if (status.hasData) {
+                if (status.data == 1) {
+                  return MyHome();
                 } else {
                   return Scaffold(
                     body: Container(
+                      width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                        begin: Alignment.bottomLeft,
-                        end: Alignment.topRight,
-                        colors: [
-                          Colors.lightBlue.shade100,
-                          Colors.lightBlue.shade200,
-                          Colors.lightBlue.shade300,
-                          Colors.lightBlue.shade200,
-                          Colors.lightBlue.shade50,
-                        ],
-                      )),
-                      child: const Center(
-                        child: Text(
-                          '''
-Something went wrong.. Please uninstall and Install Again.''',
-                          style: TextStyle(fontSize: 20.0),
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomLeft,
+                          end: Alignment.topRight,
+                          colors: [
+                            Colors.lightBlue.shade100,
+                            Colors.lightBlue.shade200,
+                            Colors.lightBlue.shade300,
+                            Colors.lightBlue.shade200,
+                            Colors.lightBlue.shade50,
+                          ],
                         ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(20.0),
+                            child: Text(
+                              'storage permission required',
+                              style: TextStyle(
+                                  fontSize: 20.0, color: Colors.white),
+                            ),
+                          ),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: TextButton(
+                              child: const Text(
+                                'Allow Storage Permission',
+                                style: TextStyle(fontSize: 20.0),
+                              ),
+                              onPressed: () {
+                                _storagePermissionChecker = requestPermission();
+                                setState(() {});
+                              },
+                            ),
+                          )
+                        ],
                       ),
                     ),
                   );
                 }
               } else {
-                return const Scaffold(
-                  body: SizedBox(
-                    child: Center(
-                      child: CircularProgressIndicator(),
+                return Scaffold(
+                  body: Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                      begin: Alignment.bottomLeft,
+                      end: Alignment.topRight,
+                      colors: [
+                        Colors.lightBlue.shade100,
+                        Colors.lightBlue.shade200,
+                        Colors.lightBlue.shade300,
+                        Colors.lightBlue.shade200,
+                        Colors.lightBlue.shade50,
+                      ],
+                    )),
+                    child: const Center(
+                      child: Text(
+                        '''
+Something went wrong.. Please uninstall and Install Again.''',
+                        style: TextStyle(fontSize: 20.0),
+                      ),
                     ),
                   ),
                 );
               }
-            },
-          ),
+            } else {
+              return Scaffold(
+                body: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'presented by',
+                        style: TextStyle(
+                            fontSize: 14, fontStyle: FontStyle.italic),
+                      ),
+                      Text(
+                        'Sudo Studio',
+                        style: TextStyle(fontSize: 24, letterSpacing: 1),
+                      ),
+                      SizedBox(
+                        height: 100,
+                      ),
+                      SizedBox(
+                        width: 80,
+                        child: LinearProgressIndicator(
+                          color: Colors.teal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+          },
         ),
       ),
     );

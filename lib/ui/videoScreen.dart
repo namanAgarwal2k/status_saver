@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../utils/video_play.dart';
+import 'constant.dart';
 
 final Directory _videoDir =
     Directory('/storage/emulated/0/WhatsApp/Media/.Statuses');
@@ -21,18 +22,27 @@ class VideoScreenState extends State<VideoScreen>
   Widget build(BuildContext context) {
     super.build(context);
     if (!Directory('${_videoDir.path}').existsSync()) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'Install WhatsApp\n',
-            style: TextStyle(fontSize: 18.0),
-          ),
-          const Text(
-            "Your Friend's Status Will Be Available Here",
-            style: TextStyle(fontSize: 18.0),
-          ),
-        ],
+      return Container(
+        color: isDark ? Colors.black : Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Install WhatsApp\n',
+              style: TextStyle(
+                fontSize: 18.0,
+                color: textColor,
+              ),
+            ),
+            Text(
+              "Your Friend's Status Will Be Available Here",
+              style: TextStyle(
+                fontSize: 18.0,
+                color: textColor,
+              ),
+            ),
+          ],
+        ),
       );
     } else {
       return VideoGrid(directory: _videoDir);
@@ -85,7 +95,8 @@ class _VideoGridState extends State<VideoGrid> {
     if (newList != null) {
       if (newList.length > 0) {
         return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          color: isDark ? Colors.black : Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           child: GridView.builder(
             itemCount: newList.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -139,8 +150,13 @@ class _VideoGridState extends State<VideoGrid> {
                                 ),
                               );
                             } else {
-                              return const Center(
-                                child: CircularProgressIndicator(),
+                              return Container(
+                                color: isDark ? Colors.black : Colors.white,
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.teal,
+                                  ),
+                                ),
                               );
                             }
                           } else {
@@ -165,16 +181,28 @@ class _VideoGridState extends State<VideoGrid> {
           ),
         );
       } else {
-        return const Center(
-          child: Text(
-            'Sorry, No Videos Found.',
-            style: TextStyle(fontSize: 18.0),
+        return Container(
+          color: isDark ? Colors.black : Colors.white,
+          child: Center(
+            child: Text(
+              'Sorry, No Videos Found.\n'
+              'Watch your friend status first and than try reopening the app',
+              style: TextStyle(
+                fontSize: 18.0,
+                color: textColor,
+              ),
+            ),
           ),
         );
       }
     } else {
-      return const Center(
-        child: CircularProgressIndicator(),
+      return Container(
+        color: isDark ? Colors.black : Colors.white,
+        child: const Center(
+          child: CircularProgressIndicator(
+            color: Colors.teal,
+          ),
+        ),
       );
     }
   }
